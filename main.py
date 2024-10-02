@@ -11,9 +11,9 @@ gemini_player_dict = {}
 gemini_pro_player_dict = {}
 default_model_dict = {}
 
-error_info="⚠️⚠️⚠️\nSomething went wrong !\nplease try to change your prompt or contact the admin !"
-before_generate_info="🤖Generating🤖"
-download_pic_notify="🤖Loading picture🤖"
+error_info="⚠️⚠️⚠️\nЧто-то пошло не так"
+before_generate_info="🤖Генерирую🤖"
+download_pic_notify="🤖Загружаю картинку🤖"
 
 n = 30  #Number of historical records to keep
 
@@ -238,11 +238,11 @@ async def main():
     await bot.delete_my_commands(scope=None, language_code=None)
     await bot.set_my_commands(
         commands=[
-            telebot.types.BotCommand("start", "Start"),
-            telebot.types.BotCommand("gemini", "using gemini-1.5-flash"),
-            telebot.types.BotCommand("gemini_pro", "using gemini-1.5-pro"),
-            telebot.types.BotCommand("clear", "Clear all history"),
-            telebot.types.BotCommand("switch","switch default model")
+            telebot.types.BotCommand("start", "старт"),
+            telebot.types.BotCommand("gemini", "использовать Gemini-1.5-flash"),
+            telebot.types.BotCommand("gemini_pro", "использовать gemini-1.5-pro"),
+            telebot.types.BotCommand("clear", "очистить всю историю"),
+            telebot.types.BotCommand("switch","поменять модель ИИ")
         ],
     )
     print("Bot init done.")
@@ -251,7 +251,7 @@ async def main():
     @bot.message_handler(commands=["start"])
     async def gemini_handler(message: Message):
         try:
-            await bot.reply_to( message , escape("Welcome, you can ask me questions now. \nFor example: `Who is john lennon?`"), parse_mode="MarkdownV2")
+            await bot.reply_to( message , escape("Добро пожаловать, вы можете задавать мне вопросы. \nНапример: `Кто такой Джон Леннон?`"), parse_mode="MarkdownV2")
         except IndexError:
             await bot.reply_to(message, error_info)
 
@@ -260,7 +260,7 @@ async def main():
         try:
             m = message.text.strip().split(maxsplit=1)[1].strip()
         except IndexError:
-            await bot.reply_to( message , escape("Please add what you want to say after /gemini. \nFor example: `/gemini Who is john lennon?`"), parse_mode="MarkdownV2")
+            await bot.reply_to( message , escape("Пожалуйста, добавьте то, что вы хотите сказать после /gemini. \nНапример: `/gemini Кто такой Джон Леннон?`"), parse_mode="MarkdownV2")
             return
         await gemini(bot,message,m)
 
@@ -269,7 +269,7 @@ async def main():
         try:
             m = message.text.strip().split(maxsplit=1)[1].strip()
         except IndexError:
-            await bot.reply_to( message , escape("Please add what you want to say after /gemini_pro. \nFor example: `/gemini_pro Who is john lennon?`"), parse_mode="MarkdownV2")
+            await bot.reply_to( message , escape("Пожалуйста, добавьте то, что вы хотите сказать после /gemini_pro. \nНапример: `/gemini_pro Кто такой Джон Леннон?`"), parse_mode="MarkdownV2")
             return
         await gemini_pro(bot,message,m)
             
@@ -280,24 +280,24 @@ async def main():
             del gemini_player_dict[str(message.from_user.id)]
         if (str(message.from_user.id) in gemini_pro_player_dict):
             del gemini_pro_player_dict[str(message.from_user.id)]
-        await bot.reply_to(message, "Your history has been cleared")
+        await bot.reply_to(message, "Ваша история очищена")
 
     @bot.message_handler(commands=["switch"])
     async def gemini_handler(message: Message):
         if message.chat.type != "private":
-            await bot.reply_to( message , "This command is only for private chat !")
+            await bot.reply_to( message , "Эта команда предназначена только для приватного чата!")
             return
         # Check if the player is already in default_model_dict.
         if str(message.from_user.id) not in default_model_dict:
             default_model_dict[str(message.from_user.id)] = False
-            await bot.reply_to( message , "Now you are using gemini-1.5-pro")
+            await bot.reply_to( message , "Теперь вы используете Gemini-1.5-pro.")
             return
         if default_model_dict[str(message.from_user.id)] == True:
             default_model_dict[str(message.from_user.id)] = False
-            await bot.reply_to( message , "Now you are using gemini-1.5-pro")
+            await bot.reply_to( message , "Теперь вы используете Gemini-1.5-pro.")
         else:
             default_model_dict[str(message.from_user.id)] = True
-            await bot.reply_to( message , "Now you are using gemini-1.5-flash")
+            await bot.reply_to( message , "Теперь вы используете Gemini-1.5-flash.")
         
     
     
